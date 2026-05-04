@@ -59,7 +59,7 @@ public class BridgeSchemaCompatibilityTests
 
         return BridgeSchemaBundleFactory.Create(
             "sample.bridge@2026-04-29",
-            "den-desktop@2026-04-29",
+            "sample-app@2026-04-29",
             builder.BuildCommandRegistry(),
             builder.BuildEventRegistry(),
             CreateSamplePayloadSchemas());
@@ -76,7 +76,7 @@ public class BridgeSchemaCompatibilityTests
             {
                 Request = new BridgeRequestFrame
                 {
-                    SchemaVersion = "den-desktop@2026-04-29",
+                    SchemaVersion = "sample-app@2026-04-29",
                     RequestId = "req_001",
                     Command = "sample.echo",
                     Payload = BridgeJson.ToElement(new SampleEchoRequest { Message = "hello" }),
@@ -90,7 +90,7 @@ public class BridgeSchemaCompatibilityTests
                     BridgeJson.ToElement(new SampleEchoResponse { Echo = "hello", RequestId = "req_001" }),
                     correlation,
                     TestTimestamp,
-                    "den-desktop@2026-04-29"),
+                    "sample-app@2026-04-29"),
                 ResponseError = BridgeResponseFrame.Failure(
                     "req_002",
                     new BridgeError
@@ -103,10 +103,10 @@ public class BridgeSchemaCompatibilityTests
                     },
                     new BridgeCorrelation { TraceId = "tr_002" },
                     TestTimestamp,
-                    "den-desktop@2026-04-29"),
+                    "sample-app@2026-04-29"),
                 Event = new BridgeEventFrame
                 {
-                    SchemaVersion = "den-desktop@2026-04-29",
+                    SchemaVersion = "sample-app@2026-04-29",
                     EventId = "evt_001",
                     Sequence = 1,
                     Event = "sample.echoed",
@@ -116,7 +116,7 @@ public class BridgeSchemaCompatibilityTests
                 },
                 Progress = new BridgeProgressFrame
                 {
-                    SchemaVersion = "den-desktop@2026-04-29",
+                    SchemaVersion = "sample-app@2026-04-29",
                     RequestId = "req_001",
                     Stage = "echoing",
                     Message = "Echoing payload",
@@ -127,7 +127,7 @@ public class BridgeSchemaCompatibilityTests
                 },
                 Cancel = new BridgeCancelFrame
                 {
-                    SchemaVersion = "den-desktop@2026-04-29",
+                    SchemaVersion = "sample-app@2026-04-29",
                     RequestId = "req_001",
                     Reason = "user_requested",
                     Correlation = correlation,
@@ -135,7 +135,7 @@ public class BridgeSchemaCompatibilityTests
                 },
                 Health = new BridgeHealthFrame
                 {
-                    SchemaVersion = "den-desktop@2026-04-29",
+                    SchemaVersion = "sample-app@2026-04-29",
                     ProcessId = 1234,
                     UptimeMs = 5000,
                     ReadyState = "ready",
@@ -149,7 +149,7 @@ public class BridgeSchemaCompatibilityTests
                 },
                 Capabilities = new BridgeCapabilitiesFrame
                 {
-                    SchemaVersion = "den-desktop@2026-04-29",
+                    SchemaVersion = "sample-app@2026-04-29",
                     AppId = "sample-app",
                     AppVersion = "0.1.0",
                     SupportedTransports = new[] { "in_memory" },

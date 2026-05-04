@@ -11,7 +11,7 @@ public class BridgeSerializationTests
     {
         var frame = new BridgeRequestFrame
         {
-            SchemaVersion = "den-desktop@2026-04-29",
+            SchemaVersion = "sample-app@2026-04-29",
             RequestId = "req_001",
             Command = "sample.echo",
             Payload = BridgeJson.ToElement(new { Message = "hello" }),
@@ -24,7 +24,7 @@ public class BridgeSerializationTests
         var json = BridgeJson.Serialize(frame);
 
         Assert.Equal(
-            "{\"protocol_version\":\"1.0\",\"schema_version\":\"den-desktop@2026-04-29\",\"frame_type\":\"request\",\"request_id\":\"req_001\",\"command\":\"sample.echo\",\"payload\":{\"message\":\"hello\"},\"deadline_ms\":30000,\"expects_progress\":true,\"correlation\":{\"trace_id\":\"tr_001\",\"task_id\":978},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
+            "{\"protocol_version\":\"1.0\",\"schema_version\":\"sample-app@2026-04-29\",\"frame_type\":\"request\",\"request_id\":\"req_001\",\"command\":\"sample.echo\",\"payload\":{\"message\":\"hello\"},\"deadline_ms\":30000,\"expects_progress\":true,\"correlation\":{\"trace_id\":\"tr_001\",\"task_id\":978},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
             json);
     }
 
@@ -36,7 +36,7 @@ public class BridgeSerializationTests
             BridgeJson.ToElement(new { SnapshotVersion = 42 }),
             new BridgeCorrelation { TraceId = "tr_001" },
             TestTimestamp,
-            "den-desktop@2026-04-29");
+            "sample-app@2026-04-29");
 
         var failure = BridgeResponseFrame.Failure(
             "req_002",
@@ -60,13 +60,13 @@ public class BridgeSerializationTests
             },
             new BridgeCorrelation { TraceId = "tr_002" },
             TestTimestamp,
-            "den-desktop@2026-04-29");
+            "sample-app@2026-04-29");
 
         Assert.Equal(
-            "{\"protocol_version\":\"1.0\",\"schema_version\":\"den-desktop@2026-04-29\",\"frame_type\":\"response\",\"request_id\":\"req_001\",\"result\":{\"snapshot_version\":42},\"correlation\":{\"trace_id\":\"tr_001\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
+            "{\"protocol_version\":\"1.0\",\"schema_version\":\"sample-app@2026-04-29\",\"frame_type\":\"response\",\"request_id\":\"req_001\",\"result\":{\"snapshot_version\":42},\"correlation\":{\"trace_id\":\"tr_001\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
             BridgeJson.Serialize(success));
         Assert.Equal(
-            "{\"protocol_version\":\"1.0\",\"schema_version\":\"den-desktop@2026-04-29\",\"frame_type\":\"response\",\"request_id\":\"req_002\",\"error\":{\"code\":\"sample.failed\",\"message\":\"Sample failure\",\"category\":\"transient\",\"details\":{\"retry_after_ms\":250},\"retryable\":true,\"caused_by\":[{\"code\":\"io.timeout\",\"message\":\"Timed out\",\"category\":\"transient\",\"retryable\":true}]},\"correlation\":{\"trace_id\":\"tr_002\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
+            "{\"protocol_version\":\"1.0\",\"schema_version\":\"sample-app@2026-04-29\",\"frame_type\":\"response\",\"request_id\":\"req_002\",\"error\":{\"code\":\"sample.failed\",\"message\":\"Sample failure\",\"category\":\"transient\",\"details\":{\"retry_after_ms\":250},\"retryable\":true,\"caused_by\":[{\"code\":\"io.timeout\",\"message\":\"Timed out\",\"category\":\"transient\",\"retryable\":true}]},\"correlation\":{\"trace_id\":\"tr_002\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
             BridgeJson.Serialize(failure));
     }
 
@@ -107,7 +107,7 @@ public class BridgeSerializationTests
     {
         var evt = new BridgeEventFrame
         {
-            SchemaVersion = "den-desktop@2026-04-29",
+            SchemaVersion = "sample-app@2026-04-29",
             EventId = "evt_001",
             Sequence = 128,
             Event = "sample.changed",
@@ -117,7 +117,7 @@ public class BridgeSerializationTests
         };
         var progress = new BridgeProgressFrame
         {
-            SchemaVersion = "den-desktop@2026-04-29",
+            SchemaVersion = "sample-app@2026-04-29",
             RequestId = "req_001",
             Stage = "fetching",
             Message = "Fetching sample data",
@@ -128,7 +128,7 @@ public class BridgeSerializationTests
         };
         var cancel = new BridgeCancelFrame
         {
-            SchemaVersion = "den-desktop@2026-04-29",
+            SchemaVersion = "sample-app@2026-04-29",
             RequestId = "req_001",
             Reason = "user_requested",
             Correlation = new BridgeCorrelation { TraceId = "tr_001" },
@@ -136,7 +136,7 @@ public class BridgeSerializationTests
         };
         var health = new BridgeHealthFrame
         {
-            SchemaVersion = "den-desktop@2026-04-29",
+            SchemaVersion = "sample-app@2026-04-29",
             ProcessId = 1234,
             UptimeMs = 5000,
             ReadyState = "ready",
@@ -149,7 +149,7 @@ public class BridgeSerializationTests
         };
         var capabilities = new BridgeCapabilitiesFrame
         {
-            SchemaVersion = "den-desktop@2026-04-29",
+            SchemaVersion = "sample-app@2026-04-29",
             AppId = "sample-app",
             AppVersion = "0.1.0",
             SupportedTransports = new[] { "in_memory" },
@@ -173,19 +173,19 @@ public class BridgeSerializationTests
         };
 
         Assert.Equal(
-            "{\"protocol_version\":\"1.0\",\"schema_version\":\"den-desktop@2026-04-29\",\"frame_type\":\"event\",\"event_id\":\"evt_001\",\"sequence\":128,\"event\":\"sample.changed\",\"payload\":{\"changed\":true},\"correlation\":{\"trace_id\":\"tr_003\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
+            "{\"protocol_version\":\"1.0\",\"schema_version\":\"sample-app@2026-04-29\",\"frame_type\":\"event\",\"event_id\":\"evt_001\",\"sequence\":128,\"event\":\"sample.changed\",\"payload\":{\"changed\":true},\"correlation\":{\"trace_id\":\"tr_003\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
             BridgeJson.Serialize(evt));
         Assert.Equal(
-            "{\"protocol_version\":\"1.0\",\"schema_version\":\"den-desktop@2026-04-29\",\"frame_type\":\"progress\",\"request_id\":\"req_001\",\"stage\":\"fetching\",\"message\":\"Fetching sample data\",\"percent\":35,\"payload\":{\"step\":\"download\"},\"correlation\":{\"trace_id\":\"tr_001\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
+            "{\"protocol_version\":\"1.0\",\"schema_version\":\"sample-app@2026-04-29\",\"frame_type\":\"progress\",\"request_id\":\"req_001\",\"stage\":\"fetching\",\"message\":\"Fetching sample data\",\"percent\":35,\"payload\":{\"step\":\"download\"},\"correlation\":{\"trace_id\":\"tr_001\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
             BridgeJson.Serialize(progress));
         Assert.Equal(
-            "{\"protocol_version\":\"1.0\",\"schema_version\":\"den-desktop@2026-04-29\",\"frame_type\":\"cancel\",\"request_id\":\"req_001\",\"reason\":\"user_requested\",\"correlation\":{\"trace_id\":\"tr_001\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
+            "{\"protocol_version\":\"1.0\",\"schema_version\":\"sample-app@2026-04-29\",\"frame_type\":\"cancel\",\"request_id\":\"req_001\",\"reason\":\"user_requested\",\"correlation\":{\"trace_id\":\"tr_001\"},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
             BridgeJson.Serialize(cancel));
         Assert.Equal(
-            "{\"protocol_version\":\"1.0\",\"schema_version\":\"den-desktop@2026-04-29\",\"frame_type\":\"health\",\"process_id\":1234,\"uptime_ms\":5000,\"ready_state\":\"ready\",\"app_id\":\"sample-app\",\"app_version\":\"0.1.0\",\"active_request_count\":2,\"degraded_subsystems\":[\"git\"],\"correlation\":{},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
+            "{\"protocol_version\":\"1.0\",\"schema_version\":\"sample-app@2026-04-29\",\"frame_type\":\"health\",\"process_id\":1234,\"uptime_ms\":5000,\"ready_state\":\"ready\",\"app_id\":\"sample-app\",\"app_version\":\"0.1.0\",\"active_request_count\":2,\"degraded_subsystems\":[\"git\"],\"correlation\":{},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
             BridgeJson.Serialize(health));
         Assert.Equal(
-            "{\"protocol_version\":\"1.0\",\"schema_version\":\"den-desktop@2026-04-29\",\"frame_type\":\"capabilities\",\"app_id\":\"sample-app\",\"app_version\":\"0.1.0\",\"supported_transports\":[\"in_memory\"],\"commands\":[{\"command\":\"sample.echo\",\"request_schema\":\"sample.echo.request\",\"response_schema\":\"sample.echo.response\",\"supports_cancellation\":true,\"supports_progress\":true,\"required_capabilities\":[\"sample\"]}],\"events\":[{\"event\":\"sample.changed\",\"payload_schema\":\"sample.changed\"}],\"feature_flags\":[\"bridge.test\"],\"schema_bundle_id\":\"sample@2026-04-29\",\"correlation\":{},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
+            "{\"protocol_version\":\"1.0\",\"schema_version\":\"sample-app@2026-04-29\",\"frame_type\":\"capabilities\",\"app_id\":\"sample-app\",\"app_version\":\"0.1.0\",\"supported_transports\":[\"in_memory\"],\"commands\":[{\"command\":\"sample.echo\",\"request_schema\":\"sample.echo.request\",\"response_schema\":\"sample.echo.response\",\"supports_cancellation\":true,\"supports_progress\":true,\"required_capabilities\":[\"sample\"]}],\"events\":[{\"event\":\"sample.changed\",\"payload_schema\":\"sample.changed\"}],\"feature_flags\":[\"bridge.test\"],\"schema_bundle_id\":\"sample@2026-04-29\",\"correlation\":{},\"sent_at\":\"2026-04-29T12:34:56+00:00\"}",
             BridgeJson.Serialize(capabilities));
     }
 }
