@@ -78,7 +78,13 @@ public sealed class BridgeCommandInvoker : IBridgeCommandRouter
                 BridgeErrorCodes.RequestCancelled,
                 $"Bridge request '{request.RequestId}' was cancelled.",
                 BridgeErrorCategories.Cancelled,
-                retryable: false);
+                retryable: false,
+                BridgeJson.ToElement(new
+                {
+                    request.Command,
+                    request.RequestId,
+                    ExceptionType = typeof(OperationCanceledException).FullName,
+                }));
         }
         catch (BridgeHandlerException ex)
         {
@@ -110,7 +116,14 @@ public sealed class BridgeCommandInvoker : IBridgeCommandRouter
                 BridgeErrorCodes.HandlerFailed,
                 $"Bridge command '{request.Command}' failed.",
                 BridgeErrorCategories.Internal,
-                retryable: false);
+                retryable: false,
+                BridgeJson.ToElement(new
+                {
+                    request.Command,
+                    request.RequestId,
+                    ExceptionType = ex.GetType().FullName,
+                    ExceptionMessage = ex.Message,
+                }));
         }
     }
 

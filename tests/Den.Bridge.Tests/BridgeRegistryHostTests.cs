@@ -133,6 +133,32 @@ public class BridgeRegistryHostTests
     }
 
     [Fact]
+    public async Task Invoker_MapsGenericHandlerExceptionToStructuredErrorDetails()
+    {
+        using var provider = BuildProvider(builder => builder.RegisterCommand<EchoRequest, EchoResponse, ThrowingHandler>("sample.throw"));
+        var router = provider.GetRequiredService<IBridgeCommandRouter>();
+
+        var response = await router.DispatchAsync(new BridgeRequestFrame
+        {
+            RequestId = "req_throw",
+            Command = "sample.throw",
+            Payload = BridgeJson.ToElement(new { Message = "hello" }),
+        });
+
+        Assert.Null(response.Result);
+        Assert.NotNull(response.Error);
+        Assert.Equal(BridgeErrorCodes.HandlerFailed, response.Error.Code);
+        Assert.Equal(BridgeErrorCategories.Internal, response.Error.Category);
+        Assert.False(response.Error.Retryable);
+        Assert.NotNull(response.Error.Details);
+        var details = response.Error.Details.Value;
+        Assert.Equal("sample.throw", details.GetProperty("command").GetString());
+        Assert.Equal("req_throw", details.GetProperty("request_id").GetString());
+        Assert.Equal("System.InvalidOperationException", details.GetProperty("exception_type").GetString());
+        Assert.Contains("Test exception", details.GetProperty("exception_message").GetString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task Invoker_PropagatesCancellationTokenToHandlerAndMapsCancelledResponse()
     {
         var probe = new CancellationProbe();
@@ -318,6 +344,17 @@ public class BridgeRegistryHostTests
                 BridgeErrorCategories.Transient,
                 retryable: true,
                 BridgeJson.ToElement(new { RetryAfterMs = 250 }));
+        }
+    }
+
+    private sealed class ThrowingHandler : IBridgeCommandHandler<EchoRequest, EchoResponse>
+    {
+        public ValueTask<EchoResponse?> HandleAsync(
+            EchoRequest request,
+            BridgeRequestContext context,
+            CancellationToken cancellationToken)
+        {
+            throw new InvalidOperationException("Test exception");
         }
     }
 

@@ -582,13 +582,21 @@ public sealed class WebSocketBridgeServer : IBridgeEventPublisher, IBridgeProgre
                         $"Bridge request '{request.RequestId}' was cancelled.",
                         BridgeErrorCategories.Cancelled);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _server._logger.LogError(ex, "Bridge WebSocket transport dispatch failed for request {RequestId}.", request.RequestId);
                     response = CreateErrorResponse(
                         request,
                         BridgeErrorCodes.HandlerFailed,
                         $"Bridge request '{request.RequestId}' failed during transport dispatch.",
-                        BridgeErrorCategories.Internal);
+                        BridgeErrorCategories.Internal,
+                        BridgeJson.ToElement(new
+                        {
+                            request.Command,
+                            request.RequestId,
+                            ExceptionType = ex.GetType().FullName,
+                            ExceptionMessage = ex.Message,
+                        }));
                 }
 
                 await TrySendFrameAsync(response, CancellationToken.None).ConfigureAwait(false);
@@ -626,7 +634,8 @@ public sealed class WebSocketBridgeServer : IBridgeEventPublisher, IBridgeProgre
             BridgeRequestFrame request,
             string code,
             string message,
-            string category)
+            string category,
+            System.Text.Json.JsonElement? details = null)
         {
             return BridgeResponseFrame.Failure(
                 request.RequestId,
@@ -634,6 +643,7 @@ public sealed class WebSocketBridgeServer : IBridgeEventPublisher, IBridgeProgre
                 message,
                 category,
                 retryable: false,
+                details: details,
                 correlation: request.Correlation,
                 sentAt: DateTimeOffset.UtcNow,
                 schemaVersion: request.SchemaVersion);
